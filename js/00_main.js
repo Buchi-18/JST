@@ -1,77 +1,111 @@
-const lines = ["1", "koko 23 04/10 tokyo","koko 23 04/10 tokyo", "23"];
+const lines = ["1 1", "koko 23 04/10 tokyo", "1 nana"];
+// const lines = [
+//   "3 2",
+//   "mako 13 08/08 nara",
+//   "taisei 16 12/04 nagano",
+//   "megumi 14 11/02 saitama",
+//   "2 taihei",
+//   "3 kimokimoo",
+// ];
 
-let userStr = lines.slice(1, -1);
-const K = parseInt(lines.slice(-1));
-let users = [];
+const N = parseInt(lines[0].split(" ")[0]);
+const K = parseInt(lines[0].split(" ")[1]);
+const userData = lines.slice(1, 1 + N);
+const updateData = lines.slice(1 + N);
+let userName;
+let updateNum;
 
-userStr.forEach(function (e) {
-  users.push(e.split(" "));
+for (let i = 0; i < updateData.length; i++) {
+  userName = updateData[i].split(" ")[1];
+  updateNum = parseInt(updateData[i].split(" ")[0] - 1);
+
+  userData[updateNum] = `${userName} ${userData[updateNum]
+    .split(" ")
+    .slice(1)
+    .join(" ")}`;
+}
+
+userData.forEach((item) => {
+  console.log(item);
 });
 
-users.forEach(function (e) {
-  let username = e[0];
-  let userOld = parseInt(e[1]);
-  if (userOld === K) {
-    console.log(username);
-  }
-});
+// console.log(parseInt(updateData[0].split(" ")[0]));
+// console.log(updateData[0].split(" ")[1]);
+
+// const modifiedUserData = userData.map((item) => {
+//   const name = item.split(" ")[0];
+// });
+
 /* ***** ***** ***** ***** ***** ***** ***** ***** 
+const N = parseInt(lines.slice(0, -1));
 
+const userStr = lines.slice(1);
 
+userStr.sort((a, b) => {
+  const ageA = parseInt(a.split(" ")[1]);
+  const ageB = parseInt(b.split(" ")[1]);
+  return ageA - ageB;
+});
+
+userStr.forEach((user) => {
+  console.log(user);
+});
 ***** ***** ***** ***** ***** ***** ***** ***** */
+
 /* ***** ***** ***** ***** ***** ***** ***** ***** 
 
+const arr = [
+  "mako 13 08/08 nara",
+  "taisei 16 12/04 nagano",
+  "megumi 14 11/02 saitama",
+];
+上記のデータをJSで下記形式に変えたい
+const obj = {
+  user:[
+  {
+    name:mako,
+    old:13,
+    date:0808,
+    location:nara
+  },
+  ...
+  ...
+  ]
+}
 
-let userStr = lines.slice(1, -1);
-const K = parseInt(lines.slice(-1));
-let users = [];
+ans...
+const arr = [
+  "mako 13 08/08 nara",
+  "megumi 14 11/02 saitama",
+  "taisei 16 12/04 nagano",
+];
 
-userStr.forEach(function (e) {
-  users.push(e.split(" "));
+const ages = arr.map((item) => {
+  const [name, age] = item.split(" ").slice(1, 2);
+  return parseInt(age);
 });
 
-users.forEach(function (e) {
-  let username = e[0];
-  let userOld = parseInt(e[1]);
-  if (userOld === K) {
-    console.log(username);
-  }
-});
+console.log(ages); // [13, 14, 16]
 
-***** ***** ***** ***** ***** ***** ***** ***** */
-/* ***** ***** ***** ***** ***** ***** ***** ***** 
+const arr = [
+  "mako 13 08/08 nara",
+  "taisei 16 12/04 nagano",
+  "megumi 14 11/02 saitama",
+];
+上記のデータのmakoとtaiseiをそれぞれmakimaとtetuoに変換する
 
-every() メソッドは、列内のすべての要素が指定された関数で実装されたテストに合格するかどうかをテストします。これは論理値を返します。
 
-let arr1 = ["1", "2", "1", "2", "3"]
-let arr2 = ["2", "1", "3", "2", "1"]
-JSでarr1のそれぞれの文字列と同じものがarr2にあるかどうかの判定
+const lines = [
+  "3",
+  "2",
+  "mako 13 08/08 nara",
+  "taisei 16 12/04 nagano",
+  "megumi 14 11/02 saitama",
+  "5",
+  "taihei",
+  "9",
+  "megu",
+];
 
-const result = arr1.every(element => arr2.includes(element));
-console.log(result);
-
-***** ***** ***** ***** ***** ***** ***** ***** */
-/* ***** ***** ***** ***** ***** ***** ***** ***** 
-
-let arr = ["5 10", "5", "6", "25", "4"];
-let jamDistance = 0;
-
-let nums = arr[0].split(" ").map((num) => parseInt(num));
-let distance = arr.slice(1);
-let distanceArray = distance.map((diff) => parseInt(diff));
-//基準数
-const num = nums[0];
-//基準の距離
-const standardDistance = nums[1];
-
-distanceArray.forEach((arr) => {
-  if (arr > standardDistance) {
-    arr = 0
-  }
-  jamDistance = jamDistance + arr;
-  return jamDistance;
-});
-
-console.log(jamDistance);
-
+眠気
 ***** ***** ***** ***** ***** ***** ***** ***** */
