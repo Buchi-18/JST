@@ -17,10 +17,6 @@ function checkTitle(data) {
   if (prepositions.includes(title[0].toLowerCase())) {
     if (!/^[A-Z][a-z]+$/.test(title[0])) {
       return false;
-    } else {
-      if (!/^[A-Z][a-z]+$/.test(title[0])) {
-        return false;
-      }
     }
   }
 
