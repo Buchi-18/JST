@@ -1,77 +1,75 @@
-// const lines = ["4 4", "###.", "#.#.", "..#.", ".###", "1 1"];
-// // 3 2
+const lines = ["4 4", "###.", "#.#.", "..#.", ".###", "1 1"];
+// 3 2
 
-// const h = parseInt(lines[0].split(" ")[0]);
-// const w = parseInt(lines[0].split(" ")[1]);
-// const bricks = lines.slice(1, h + 1).map((items) => items.split(""));
-// const [x, y] = lines[h + 1].split(" ").map(Number);
-// let [pos_X, pos_Y] = [x - 1, y - 1];
+const h = parseInt(lines[0].split(" ")[0]);
+const w = parseInt(lines[0].split(" ")[1]);
+const bricks = lines.slice(1, h + 1).map((items) => items.split(""));
+const [x, y] = lines[h + 1].split(" ").map(Number);
+let [pos_X, pos_Y] = [x - 1, y - 1];
 
-// bricks[pos_Y][pos_X] = ".";
-// // pos_Y--;
-// // pos_X--;
+bricks[pos_Y][pos_X] = ".";
+// pos_Y--;
+// pos_X--;
 
-// let getIsGrounded = isGrounded(bricks, pos_Y, pos_X)[0];
-// let getCoordinate = isGrounded(bricks, pos_Y, pos_X)[1];
+let getIsGrounded = isGrounded(bricks, pos_Y, pos_X)[0];
+let getCoordinate = isGrounded(bricks, pos_Y, pos_X)[1];
 
-// // console.log(result[1]);
+// console.log(result[1]);
 
-// if (getIsGrounded) {
-//   console.log(bricks);
-//   console.log(getIsGrounded);
-// } else {
-//   for (let i = 0; i < getCoordinate.length; i++) {
-//     let get_X = getCoordinate[i][1];
-//     let get_Y = getCoordinate[i][0];
-//     bricks[get_Y][get_X] = ".";
-//   }
-//   console.log(bricks);
-//   console.log(getIsGrounded);
-// }
+if (getIsGrounded) {
+  console.log(bricks);
+  console.log(getIsGrounded);
+} else {
+  for (let i = 0; i < getCoordinate.length; i++) {
+    let get_X = getCoordinate[i][1];
+    let get_Y = getCoordinate[i][0];
+    bricks[get_Y][get_X] = ".";
+  }
+  console.log(bricks);
+  console.log(getIsGrounded);
+}
 
-// function isGrounded(bricks, row, col) {
-//   if (row === bricks.length - 1) {
-//     return true; // 最下部の場合は必ず地面に接地している
-//   }
+function isGrounded(bricks, row, col) {
+  if (row === bricks.length - 1) {
+    return true; // 最下部の場合は必ず地面に接地している
+  }
 
-//   const directions = [
-//     [-1, 0],
-//     [0, -1],
-//     [0, 1],
-//     [1, 0],
-//   ]; // 上下左右の座標変化
-//   const queue = [[row, col]]; // BFSのためのキュー
-//   const visited = new Set(); // 既に訪れた座標の記録
-//   let coordinate = [];
+  const directions = [
+    [-1, 0],
+    [0, -1],
+    [0, 1],
+    [1, 0],
+  ]; // 上下左右の座標変化
+  const queue = [[row, col]]; // BFSのためのキュー
+  const visited = new Set(); // 既に訪れた座標の記録
+  let coordinate = [];
 
-//   while (queue.length > 0) {
-//     const [r, c] = queue.shift();
-//     if (r === bricks.length - 1) {
-//       return [true, coordinate]; // 地面に到達したら true を返す
-//     }
+  while (queue.length > 0) {
+    const [r, c] = queue.shift();
+    if (r === bricks.length - 1) {
+      return [true, coordinate]; // 地面に到達したら true を返す
+    }
 
-//     for (const [dr, dc] of directions) {
+    for (const [dr, dc] of directions) {
+      const nr = r + dr;
+      const nc = c + dc;
 
-//       const nr = r + dr;
-//       const nc = c + dc;
-
-//       if (nr < 0 || nr >= bricks.length || nc < 0 || nc >= bricks[0].length) {
-//         continue; // 領域外は無視する
-//       }
-//       if (visited.has(`${nr},${nc}`)) {
-//         continue; // 既に訪れた座標は無視する
-//       }
-//       if (bricks[nr][nc] !== "#") {
-//         continue; // "#" 以外は無視する
-//       }
-//       coordinate.push([nr, nc]);
-//       queue.push([nr, nc]);
-//       visited.add(`${nr},${nc}`);
-//     }
-//     console.log(visited);
-//   }
-//   return [false, coordinate];
-// }
+      if (nr < 0 || nr >= bricks.length || nc < 0 || nc >= bricks[0].length) {
+        continue; // 領域外は無視する
+      }
+      if (visited.has(`${nr},${nc}`)) {
+        continue; // 既に訪れた座標は無視する
+      }
+      if (bricks[nr][nc] !== "#") {
+        continue; // "#" 以外は無視する
+      }
+      coordinate.push([nr, nc]);
+      queue.push([nr, nc]);
+      visited.add(`${nr},${nc}`);
+    }
+  }
+  return [false, coordinate];
+}
 
 /* ***** ***** ***** ***** ***** ***** ***** ***** 
 （図）
@@ -191,73 +189,3 @@ const bricks = [
 
 任意の位置の＃の一段上下、一列左右の値が＃だった時、該当が隣接する＃を辿って最下部の配列の＃に、辿り着けない場合は＃を.に変換 Javascript
 ***** ***** ***** ***** ***** ***** ***** ***** */
-
-const bricks = [
-  ["#", "#", "#", "."],
-  ["#", ".", "#", "."],
-  [".", ".", "#", "."],
-  [".", "#", "#", "#"],
-];
-
-// bricks[1][2]を"."に書き換えた後の配列
-bricks[1][2] = ".";
-const numRows = bricks.length;
-const numCols = bricks[0].length;
-
-// 地面に接している＃の座標を地面Setに追加する
-const groundSet = new Set();
-for (let j = 0; j < numCols; j++) {
-  if (bricks[numRows - 1][j] === "#") {
-    groundSet.add(`${numRows - 1},${j}`);
-  }
-}
-
-// 隣接する＃を辿って地面に接地しているかを判定する関数
-function isGrounded(row, col) {
-  const stack = [];
-  const visited = new Set();
-
-  stack.push(`${row},${col}`);
-
-  while (stack.length) {
-    const [currRow, currCol] = stack.pop();
-    if (currRow === numRows - 1) {
-      return true;
-    }
-
-    visited.add(`${currRow},${currCol}`);
-
-    const neighbors = [
-      [currRow - 1, currCol],
-      [currRow + 1, currCol],
-      [currRow, currCol - 1],
-      [currRow, currCol + 1],
-    ];
-
-    for (let [r, c] of neighbors) {
-      if (r >= 0 && r < numRows && c >= 0 && c < numCols) {
-        if (bricks[r][c] === "#" && !visited.has(`${r},${c}`)) {
-          stack.push(`${r},${c}`);
-        }
-      }
-    }
-  }
-
-  return false;
-}
-
-// "#"の位置をチェックし、地面に接地しているかを判定する
-for (let i = 0; i < numRows; i++) {
-  for (let j = 0; j < numCols; j++) {
-    if (bricks[i][j] === "#") {
-      if (isGrounded(i, j)) {
-        groundSet.add(`${i},${j}`);
-      } else {
-        bricks[i][j] = ".";
-      }
-    }
-  }
-}
-
-// 結果を表示
-console.log(bricks);
