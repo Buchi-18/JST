@@ -37,7 +37,7 @@ class Employee {
   }
 }
 
-// const lines = ["3", "make 1 nana", "getnum 1", "getname 1"];
+const lines = ["3", "make 1 nana", "getnum 1", "getname 1"];
 const N = parseInt(lines[0]);
 const inputArr = lines.slice(1).map((item) => item.split(" "));
 
@@ -74,5 +74,6 @@ for (let i = 0; i < inputArr.length; i++) {
 }
 
 上記のJavaScript構文をclass Employeeを使ってリファクタリングしてください
+
 
 ***** ***** ***** ***** ***** ***** ***** ***** */
