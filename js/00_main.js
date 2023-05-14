@@ -1,88 +1,51 @@
-// import { lines2, ans2} from "./0512_lines.js";
-const lines = ["2 3", "20", "30", "1 0", "2 0", "1 A"];
+const lines = [
+  "10 19",
+  ".#.##.#..###..#..##",
+  "#.#...##.##.#.....#",
+  "...#...###..#.#.#..",
+  ".##.#..##.#...#.##.",
+  ".#.#.#.##.##.#.#.#.",
+  ".###.....#..##.##..",
+  "##..#.#..#...####..",
+  "..#..#..#.#..#..##.",
+  ".###..#.##.#..###..",
+  "###...#....###.###.",
+  "6 9",
+];
 
+const H = Number(lines[0].split(" ")[0]);
+const W = Number(lines[0].split(" ")[1]);
+const records = lines.slice(1, H + 1).map((row) => row.split(""));
+const rewrite = lines.slice(-1)[0].split(" ").map(Number);
+const targetRow = rewrite[0];
+const targetCol = rewrite[1];
+const targetRange = [
+  [0, 0],
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+  [0, 1],
+]
+  .map(([row, col]) => [targetRow + row, targetCol + col])
+  .filter(([row, col]) => row >= 0 && col >= 0 && row < H && col < W);
 
-const n = Number(lines[0].split(" ")[0]);
-const k = Number(lines[0].split(" ")[1]);
-const HowOld = lines.slice(1, n + 1).map(Number);
-const ordering = lines
-  .slice(n + 1)
-  .map((item) => item.split(" "))
-  .map((subArr) => [Number(subArr[0]), subArr[1], Number(subArr[2])]);
-
-const result = [];
-const leaving = [];
-// console.log(ordering);
-// const str = num.filter(item => item[1] === "A");
-class UnderTwenty {
-  constructor(num, ordering) {
-    this.AllOrder = ordering.filter((item) => item[1] !== "A");
-    this.leave = ordering.filter((item) => item[1] === "A");
-    this.clientNum = num;
-    this.clientOrder = [];
-    this.clientAmount;
-  }
-
-  getTotalAmount() {
-    this.clientAmount = 0;
-    this.clientOrder = this.AllOrder.filter((subArr) =>
-      subArr.some((n) => n === this.clientNum)
-    );
-
-    this.clientOrder.forEach((order) => {
-      if (order[1] !== "alcohol" && order[1] !== "0") {
-        this.clientAmount += order[2];
-      } else {
-        this.clientAmount += 0;
-      }
-    });
-    return [this.clientAmount, this.leave];
-  }
-}
-
-class OverTwenty extends UnderTwenty {
-  getTotalAlcoholAmount() {
-    this.clientAmount = 0;
-    this.clientOrder = this.AllOrder.filter((subArr) =>
-      subArr.some((num) => num === this.clientNum)
-    );
-
-    const isAlcohol = this.clientOrder.some(
-      (subArr) => subArr[1] === "alcohol" || subArr[1] === "0"
-    );
-    if (isAlcohol) {
-      this.clientOrder.forEach((order) => {
-        switch (order[1]) {
-          case "food":
-            order[2] -= 200;
-            break;
-          case "0":
-            order[2] = 500;
-            break;
-        }
-      });
+function rewriteRecord() {
+  targetRange.forEach(([row, col]) => {
+    if (records[row][col] === ".") {
+      records[row][col] = "#";
+    } else {
+      records[row][col] = ".";
     }
-    this.clientOrder.forEach((order) => {
-      this.clientAmount += order[2];
-    });
-
-    return [this.clientAmount, this.leave];
-  }
+  });
+  return records;
 }
 
-for (let i = 0; i < HowOld.length; i++) {
-  let num = i + 1;
-  if (HowOld[i] < 20) {
-    result.push(new UnderTwenty(num, ordering).getTotalAmount()[0]);
-    leaving.push(new UnderTwenty(num, ordering).getTotalAmount()[1]);
-  } else {
-    result.push(new OverTwenty(num, ordering).getTotalAlcoholAmount()[0]);
-    leaving.push(new UnderTwenty(num, ordering).getTotalAmount()[1]);
-  }
+function showRecord() {
+  const recordsRow = rewriteRecord().map((row) => row.join(""));
+  return recordsRow;
 }
 
-console.log(result);
-console.log(leaving);
-
-/*
- */
+const result = showRecord();
+for (let i = 0; i < result.length; i++) {
+  console.log(result[i]);
+}
