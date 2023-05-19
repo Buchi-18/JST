@@ -30,6 +30,7 @@ const heroes = lines.slice(1, N + 1).map((line, i) => {
 // イベントデータを格納
 const events = lines.slice(1 + N).map((e) => e.split(" "));
 
+
 let targetHero;
 for (let i = 0; i < K; i++) {
   const designationId = Number(events[i][0]);
