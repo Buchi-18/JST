@@ -1,126 +1,132 @@
 const lines = [
-  "3 6",
-  "10 1 1 2 2 3 3",
-  "10 0 0 6 1 7 2",
-  "10 0 0 7 5 8 3",
-  "1 1 2 2",
-  "1 2 3 2",
-  "1 3 2 3",
-  "2 2 3 1",
-  "2 3 3 1",
-  "1 2 3 2",
+  "5 10",
+  "supersupercar 1102 67",
+  "supersupercar 63296 25",
+  "supersupersupercar 47388 32",
+  "supersupercar 30968 68",
+  "supersupercar 53668 78",
+  "2 run",
+  "3 teleport",
+  "1 fly",
+  "2 run",
+  "4 run",
+  "5 fly",
+  "5 run",
+  "2 fly",
+  "4 run",
+  "1 fly",
 ];
+// 8978
+// 675
+// 1048576
+// 136
+// 6162
 
-class Player {
-  constructor(playerId, HP, attacks) {
-    this.playerId = playerId;
-    this.HP = HP;
-    this.attacks = attacks;
-  }
+const [N, K] = lines[0].split(" ").map(Number);
 
-  updateAttackFrames() {
-    for (let i = 0; i < this.attacks.length; i++) {
-      let frame = this.attacks[i][0];
-      let attack = this.attacks[i][1];
-      this.attacks[i][0] = frame > 1 ? frame - 3 : frame;
-      this.attacks[i][1] = attack > 0 ? attack + 5 : attack;
-    }
-  }
+const cars = lines.slice(1, 1 + N).map((car, index) => {
+  const [car_model, amount_of_fuel, fuel_consumption] = car.split(" ");
+  return {
+    car_id: index + 1,
+    car_model,
+    amount_of_fuel: Number(amount_of_fuel),
+    fuel_consumption: Number(fuel_consumption),
+  };
+});
 
-  takeDamage(damage) {
-    this.HP = Math.max(this.HP - damage, 0);
+const simulationResults = cars.map(({ car_id, amount_of_fuel }) => {
+  return {
+    car_id,
+    amount_of_fuel,
+    totalMileage: 0,
+  };
+});
+
+const actions = lines.slice(1 + N).map((item) => {
+  const [number, action] = item.split(" ");
+  return [Number(number), action];
+});
+
+for (let i = 0; i < K; i++) {
+  const id = actions[i][0];
+  const num = id - 1;
+  const action = actions[i][1];
+  const fuel = simulationResults[num].amount_of_fuel;
+  const consumption = cars[num].fuel_consumption;
+  const car = cars[num].car_model;
+
+  if (fuel === 0) continue;
+
+  switch (car) {
+    case "supercar":
+      if (action !== "run") continue;
+      run(num, consumption);
+      break;
+    case "supersupercar":
+      if (action === "teleport") continue;
+      if (action === "fly" && fuel >= 5) {
+        ssFly(num, consumption);
+      } else {
+        run(num, consumption);
+      }
+      break;
+    case "supersupersupercar":
+      if (action === "teleport" && fuel >= Math.pow(consumption, 2)) {
+        teleport(num, consumption);
+      } else if (action !== "run" && fuel >= 5) {
+        sssFly(num, consumption);
+      } else {
+        run(num, consumption);
+      }
+      break;
+    default:
+      console.log("車種の指定に誤りがあります");
+      break;
   }
 }
 
-class Game {
-  constructor(lines) {
-    //参加プレイヤーの総数と総ターン数を取得
-    const [playerNum, turn] = lines[0].split(" ").map(Number);
-    //全プレイヤーのデータオブジェクトを作成
-    this.players = lines.slice(1, 1 + playerNum).map((data, i) => {
-      const [HP, ...attacks] = data.split(" ").map(Number);
-      return new Player(i + 1, HP, [
-        attacks.slice(0, 2),
-        attacks.slice(2, 4),
-        attacks.slice(4, 6),
-      ]);
-    });
-    //コマンドを配列に格納
-    this.commands = lines
-      .slice(1 + playerNum)
-      .map((command) => command.split(" ").map(Number));
-  }
-
-  //
-  //ラウンド処理
-  getRoundFight() {
-    //全プレイヤーのデータのディープコピー
-    const newPlayers = this.players.map((player) =>
-      Object.assign(Object.create(Object.getPrototypeOf(player)), player)
-    );
-
-    // Object.assign(Object.create(Object.getPrototypeOf(player)), player)
-    // の形式を使用することで
-    // 新しいオブジェクトが元のオブジェクトのプロトタイプチェーンを継承し
-    // 元のオブジェクトと同じプロパティを持つ新しいオブジェクトが作成されます。
-
-    for (let i = 0; i < this.commands.length; i++) {
-      const playerNum_A = this.commands[i][0];
-      const playerNum_B = this.commands[i][2];
-      const commandNum_A = this.commands[i][1] - 1;
-      const commandNum_B = this.commands[i][3] - 1;
-
-      const player_A = newPlayers.find(
-        (player) => player.playerId === playerNum_A
-      );
-      const player_B = newPlayers.find(
-        (player) => player.playerId === playerNum_B
-      );
-
-      const frame_A = player_A.attacks[commandNum_A][0];
-      const frame_B = player_B.attacks[commandNum_B][0];
-
-      //いずれかのPlayerのHPがゼロだった場合処理をスキップ
-      if (player_A.HP === 0 || player_B.HP === 0) continue;
-
-      //Player_Aの技が強化系の場合の処理
-      if (frame_A === 0) {
-        player_A.updateAttackFrames();
-        if (frame_B !== 0) {
-          player_A.takeDamage(player_B.attacks[commandNum_B][1]);
-        }
-      }
-      //Player_Bの技が強化系の場合の処理
-      if (frame_B === 0) {
-        player_B.updateAttackFrames();
-        if (frame_A !== 0) {
-          player_B.takeDamage(player_A.attacks[commandNum_A][1]);
-        }
-      }
-
-      //通常攻撃時の処理
-      if (frame_A < frame_B) {
-        const damage_B = player_A.attacks[commandNum_A][1];
-        player_B.takeDamage(damage_B);
-      } else if (frame_A > frame_B) {
-        const damage_A = player_B.attacks[commandNum_B][1];
-        player_A.takeDamage(damage_A);
-      }
-    }
-
-    return newPlayers;
-  }
-
-  //生存者の情報を取得
-  getSurvivor() {
-    return this.getRoundFight().filter((player) => player.HP > 0);
-  }
-
-  //生存者の数を返す
-  getSurvivorCount() {
-    return this.getSurvivor().length;
-  }
+function run(num, consumption) {
+  //燃料消費
+  simulationResults[num].amount_of_fuel = Math.max(
+    simulationResults[num].amount_of_fuel - 1,
+    0
+  );
+  //走行距離加算
+  simulationResults[num].totalMileage += consumption;
 }
 
-const game = new Game(lines);
-console.log(game.getSurvivorCount());
+function ssFly(num, consumption) {
+  //燃料消費
+  simulationResults[num].amount_of_fuel = Math.max(
+    simulationResults[num].amount_of_fuel - 5,
+    0
+  );
+  //走行距離加算
+  simulationResults[num].totalMileage += Math.pow(consumption, 2);
+}
+
+function sssFly(num, consumption) {
+  //燃料消費
+  simulationResults[num].amount_of_fuel = Math.max(
+    simulationResults[num].amount_of_fuel - 5,
+    0
+  );
+  //走行距離加算
+  simulationResults[num].totalMileage += 2 * Math.pow(consumption, 2);
+}
+
+function teleport(num, consumption) {
+  //燃料消費
+  simulationResults[num].amount_of_fuel = Math.max(
+    simulationResults[num].amount_of_fuel - Math.pow(consumption, 2),
+    0
+  );
+  //走行距離加算
+  simulationResults[num].totalMileage += Math.pow(consumption, 4);
+}
+
+function getMileage() {
+  return simulationResults.map((mile) => mile.totalMileage);
+}
+
+const showResult = getMileage().forEach((show) => console.log(show));
